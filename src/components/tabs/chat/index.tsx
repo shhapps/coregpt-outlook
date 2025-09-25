@@ -1,30 +1,30 @@
-import { CheckIcon, CopyIcon, Cross2Icon, MaskOnIcon, PaperPlaneIcon, Pencil2Icon } from '@radix-ui/react-icons'
+import { CheckIcon, CopyIcon, Cross2Icon } from '@radix-ui/react-icons'
 import { Box, Flex, Grid, IconButton, Text, TextArea, Tooltip } from '@radix-ui/themes'
 import {
   createRef,
+  type FC,
+  type KeyboardEvent,
+  type RefObject,
+  useEffect,
   useLayoutEffect,
   useRef,
-  useState,
-  type FC,
-  type RefObject,
-  type KeyboardEvent,
-  useEffect
+  useState
 } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { toast } from 'sonner'
 
 import classes from './chat.module.css'
 
-import ChatIcon from '@/components/ui/icons/ChatIcon.tsx'
 import useCopy from '@/hooks/useCopy.ts'
 import type { IMessage, IMessageExamples } from '@/interfaces/app.interfaces.ts'
 import { useAppStore } from '@/stores/app.store.ts'
 import { useChatStore } from '@/stores/chat.store.ts'
 import { API_URL, conversationIdHeader, cssThemeColorVarName, LocalStorageKeys, Theme } from '@/utils/constants.ts'
 import { debounce, reloadWithClearing } from '@/utils/global'
-import { getSelectedSlidesText } from '@/utils/office/slide-utils.ts'
+import { getSelectedOutlookText } from '@/utils/office/outlook-utils.ts'
 import { sendErrorToSentry } from '@/utils/sentry.ts'
 import { streamAsyncIterable } from '@/utils/streaming.ts'
+import { Bot, CircleStop, SendHorizonal, SquarePen } from 'lucide-react'
 
 interface ICopyBtnProps {
   index: number
@@ -33,10 +33,11 @@ interface ICopyBtnProps {
 }
 
 const examples: IMessageExamples[] = [
-  { icon: '📋', message: 'Create a presentation outline for my topic' },
-  { icon: '✨', message: 'Generate slide content for this section' },
-  { icon: '🎨', message: 'Suggest design improvements for my slides' },
-  { icon: '🎤', message: 'Write speaker notes for this presentation' }
+  { icon: '✉️', message: 'Summarize this email in a few bullet points' },
+  { icon: '📝', message: 'Draft a professional reply to this message' },
+  { icon: '🔍', message: 'Extract key action items from this email' },
+  { icon: '🌐', message: 'Translate this email into Spanish' },
+  { icon: '⚡', message: 'Make this email more concise and clear' }
 ]
 
 const CopyBtn: FC<ICopyBtnProps> = ({ index, content, assistantRefs }) => {
@@ -83,7 +84,7 @@ export default function Chat() {
     setStoreMessages
   } = useChatStore()
   const [currentSelection, setCurrentSelection] = useState<string>('')
-  const { theme, appTab } = useAppStore()
+  const { theme } = useAppStore()
   const [messages, setMessages] = useState<IMessage[]>(storeMessages)
   const messagesRef = useRef<HTMLDivElement>(null)
   const textAreaRef = useRef<HTMLTextAreaElement>(null)
@@ -126,7 +127,7 @@ export default function Chat() {
       const abortController = new AbortController()
       abortControllerRef.current = abortController
 
-      const response = await fetch(`${API_URL}/powerpoint/ai-chat`, {
+      const response = await fetch(`${API_URL}/outlook/ai-chat`, {
         method: 'POST',
         headers,
         body: JSON.stringify({
@@ -198,29 +199,28 @@ export default function Chat() {
   }, [messages, setStoreMessages])
 
   useEffect(() => {
-    return () => {
-      if (abortControllerRef.current) abortControllerRef.current.abort()
-    }
-  }, [appTab])
+    let previousSelection = ''
+    let debounceTimeout: number | undefined | ReturnType<typeof setTimeout>
 
-  useEffect(() => {
     async function checkCurrentSelection() {
-      if (!currentSelection) {
-        const currentSelectionText = await getSelectedSlidesText()
-        if (currentSelectionText.trim().length !== 0) setCurrentSelection(currentSelectionText)
+      let currentSelectionText = await getSelectedOutlookText()
+      if (typeof currentSelectionText === 'object') currentSelectionText = ''
+
+      if (currentSelectionText !== previousSelection) {
+        previousSelection = currentSelectionText
+
+        clearTimeout(debounceTimeout)
+        debounceTimeout = setTimeout(() => {
+          setCurrentSelection(currentSelectionText)
+        }, 300)
       }
     }
 
-    async function handleSelectionChange() {
-      Office.context.document.addHandlerAsync(Office.EventType.DocumentSelectionChanged, async function () {
-        const currentSelectionText = await getSelectedSlidesText()
-        setCurrentSelection(currentSelectionText)
-      })
+    const intervalId = setInterval(checkCurrentSelection, 1000)
+    return () => {
+      clearInterval(intervalId)
+      clearTimeout(debounceTimeout)
     }
-
-    void handleSelectionChange()
-    void checkCurrentSelection()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
@@ -228,8 +228,8 @@ export default function Chat() {
       <Box className={classes.header}>
         <Flex justify="between" align="center">
           <Flex align="center" justify="start" gap="2">
-            <IconButton className={classes.chatIcon} variant="outline">
-              <ChatIcon />
+            <IconButton className={classes.chatIcon} variant="ghost">
+              <Bot size="20" />
             </IconButton>
             <Text size="3" weight="bold" style={{ color: `var(${cssThemeColorVarName})` }}>
               GPT Chat Assistant
@@ -239,11 +239,11 @@ export default function Chat() {
             <IconButton
               disabled={chatResponseLoading || !messages.length}
               onClick={handleNewChatClick}
-              variant="outline"
+              variant="ghost"
               size="1"
               className={classes.newChatIcon}
             >
-              <Pencil2Icon />
+              <SquarePen size="20" />
             </IconButton>
           </Tooltip>
         </Flex>
@@ -305,17 +305,17 @@ export default function Chat() {
           autoFocus
           ref={textAreaRef}
           rows={4}
-          placeholder="Ask freely... Select slides for context"
+          placeholder="Ask freely... Select mail for context"
         />
         <IconButton
           onClick={handleSendClick}
           onKeyDown={handleKeyDown}
           tabIndex={0}
           className={classes.sendBtn}
-          variant="outline"
+          variant="ghost"
           autoFocus
         >
-          {chatResponseLoading ? <MaskOnIcon color="red" /> : <PaperPlaneIcon />}
+          {chatResponseLoading ? <CircleStop strokeWidth="1.5" color="red" /> : <SendHorizonal size="20" />}
         </IconButton>
       </Box>
     </Box>

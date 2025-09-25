@@ -1,4 +1,3 @@
-import { SunIcon, MoonIcon } from '@radix-ui/react-icons'
 import { Avatar, Box, Card, IconButton, Tooltip } from '@radix-ui/themes'
 
 import classes from './header.module.css'
@@ -6,6 +5,7 @@ import classes from './header.module.css'
 import { useAppStore } from '@/stores/app.store.ts'
 import { Theme } from '@/utils/constants'
 import { LogoImage } from '@/utils/global/files'
+import { Moon, Sun } from 'lucide-react'
 
 const Header = () => {
   const { theme, updateTheme } = useAppStore()
@@ -29,7 +29,7 @@ const Header = () => {
         <Box className={classes.leftItems}>
           <Tooltip content="Toggle theme">
             <IconButton ml="3" onClick={handleThemeClick} variant="outline" size="1">
-              {theme === Theme.dark ? <SunIcon width="15" height="15" /> : <MoonIcon width="15" height="15" />}
+              {theme === Theme.dark ? <Sun width="15" height="15" /> : <Moon width="15" height="15" />}
             </IconButton>
           </Tooltip>
         </Box>

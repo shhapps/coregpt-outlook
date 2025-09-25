@@ -1,7 +1,7 @@
 .wrapper {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 130px);
+    height: calc(100vh - 90px);
     margin-top: 10px;
 }
 
@@ -12,7 +12,7 @@
 .chatIcon {
     width: 20px;
     height: 20px;
-    padding: 4px 3px 3px;
+    padding: 1px 3px 3px;
 }
 
 .newChatIcon {
@@ -125,7 +125,7 @@
 .sendBtn {
     width: 25px;
     height: 25px;
-    bottom: 5px;
+    bottom: 10px;
     right: 15px;
     position: absolute;
     padding: 1px;
