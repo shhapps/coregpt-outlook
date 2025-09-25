@@ -9,8 +9,8 @@
     <DefaultLocale>en-US</DefaultLocale>
     <DisplayName DefaultValue="ChatGPT AI for Outlook"/>
     <Description DefaultValue="Boost Outlook productivity with AI."/>
-    <IconUrl DefaultValue="https://outlook-addin.coregptapps.com/assets/icon-32.png"/>
-    <HighResolutionIconUrl DefaultValue="https://outlook-addin.coregptapps.com/assets/icon-64.png"/>
+    <IconUrl DefaultValue="https://outlook-addin.coregptapps.com/assets/icon-64.png"/>
+    <HighResolutionIconUrl DefaultValue="https://outlook-addin.coregptapps.com/assets/icon-128.png"/>
     <SupportUrl DefaultValue="https://coregptapps.com/contact-us" />
     <AppDomains>
         <AppDomain>https://outlook-addin.coregptapps.com</AppDomain>
