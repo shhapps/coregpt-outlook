@@ -31,7 +31,7 @@ const App: FC<IOfficeInitialized> = ({ isOfficeInitialized }) => {
   const { theme } = useAppStore()
 
   return (
-    <Theme appearance={theme as never} accentColor="blue">
+    <Theme appearance={theme as never} accentColor="indigo">
       {isOfficeInitialized ? <AppContent /> : <Loader />}
     </Theme>
   )
