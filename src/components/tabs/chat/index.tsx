@@ -1,27 +1,30 @@
-import { CheckIcon, CopyIcon, Cross2Icon, MaskOnIcon, PaperPlaneIcon, Pencil2Icon } from '@radix-ui/react-icons'
+import { CheckIcon, CopyIcon, Cross2Icon } from '@radix-ui/react-icons'
 import { Box, Flex, Grid, IconButton, Text, TextArea, Tooltip } from '@radix-ui/themes'
+import { Bot, CircleStop, SendHorizonal, SquarePen } from 'lucide-react'
 import {
   createRef,
+  type FC,
+  type KeyboardEvent,
+  type RefObject,
+  useEffect,
   useLayoutEffect,
   useRef,
-  useState,
-  type FC,
-  type RefObject,
-  type KeyboardEvent,
-  useEffect
+  useState
 } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { toast } from 'sonner'
 
 import classes from './chat.module.css'
 
-import ChatIcon from '@/components/ui/icons/ChatIcon.tsx'
-import useCopy from '@/hooks/useCopy'
-import type { IMessage, IMessageExamples } from '@/interfaces/app.interfaces'
-import { useAppStore } from '@/stores/app.store'
-import { useChatStore } from '@/stores/chat.store'
-import { API_URL, conversationIdHeader, cssThemeColorVarName, LocalStorageKeys, Theme } from '@/utils/constants'
+import useCopy from '@/hooks/useCopy.ts'
+import type { IMessage, IMessageExamples } from '@/interfaces/app.interfaces.ts'
+import { useAppStore } from '@/stores/app.store.ts'
+import { useChatStore } from '@/stores/chat.store.ts'
+import { API_URL, conversationIdHeader, cssThemeColorVarName, LocalStorageKeys, Theme } from '@/utils/constants.ts'
 import { debounce, reloadWithClearing } from '@/utils/global'
+import { getSelectedOutlookText } from '@/utils/office/outlook-utils.ts'
+import { sendErrorToSentry } from '@/utils/sentry.ts'
+import { streamAsyncIterable } from '@/utils/streaming.ts'
 
 interface ICopyBtnProps {
   index: number
@@ -30,10 +33,11 @@ interface ICopyBtnProps {
 }
 
 const examples: IMessageExamples[] = [
-  { icon: '📝', message: 'Summarize text into 3 key bullet points' },
-  { icon: '✅', message: 'Expand content with more supporting details' },
-  { icon: '💡', message: 'Translate text to Spanish (or any language)' },
-  { icon: '🌍', message: 'Check and fix grammar in text' }
+  { icon: '✉️', message: 'Summarize this email in a few bullet points' },
+  { icon: '📝', message: 'Draft a professional reply to this message' },
+  { icon: '🔍', message: 'Extract key action items from this email' },
+  { icon: '🌐', message: 'Translate this email into Spanish' },
+  { icon: '⚡', message: 'Make this email more concise and clear' }
 ]
 
 const CopyBtn: FC<ICopyBtnProps> = ({ index, content, assistantRefs }) => {
@@ -79,6 +83,7 @@ export default function Chat() {
     storeMessages,
     setStoreMessages
   } = useChatStore()
+  const [currentSelection, setCurrentSelection] = useState<string>('')
   const { theme } = useAppStore()
   const [messages, setMessages] = useState<IMessage[]>(storeMessages)
   const messagesRef = useRef<HTMLDivElement>(null)
@@ -122,27 +127,27 @@ export default function Chat() {
       const abortController = new AbortController()
       abortControllerRef.current = abortController
 
-      const response = await fetch(`${API_URL}/word/ai-chat`, {
+      const response = await fetch(`${API_URL}/outlook/ai-chat`, {
         method: 'POST',
         headers,
-        body: JSON.stringify({ message: prompt, conversation_id: conversationId }),
+        body: JSON.stringify({
+          message: `${prompt}${currentSelection.trim().length ? ` ${currentSelection}` : ''}`,
+          conversation_id: conversationId
+        }),
         signal: abortController.signal
       })
+
       if (response.status === 401) return reloadWithClearing()
       if (!response.ok) throw new Error((await response.json()).message)
       if (!response.body) throw new Error('Streaming not supported')
 
       setMessages(old => [...old, { role: 'assistant', content: '' }])
 
-      const reader = response.body.getReader()
       const chatConversationId = response.headers.get(conversationIdHeader)
-      if (chatConversationId !== conversationId) setConversationId(String(chatConversationId))
-      const decoder = new TextDecoder()
 
-      while (true) {
-        const { value, done } = await reader.read()
-        if (done) break
-        const chunk = decoder.decode(value, { stream: true })
+      if (chatConversationId !== conversationId) setConversationId(String(chatConversationId))
+
+      for await (const chunk of streamAsyncIterable(response)) {
         setMessages(old => {
           const next = [...old]
           next[next.length - 1] = {
@@ -159,6 +164,7 @@ export default function Chat() {
       toast.error('Error streaming response', {
         action: { label: <Cross2Icon />, onClick: () => {} }
       })
+      sendErrorToSentry(err)
     } finally {
       setChatResponseLoading(false)
       textAreaRef.current?.focus()
@@ -193,8 +199,27 @@ export default function Chat() {
   }, [messages, setStoreMessages])
 
   useEffect(() => {
+    let previousSelection = ''
+    let debounceTimeout: number | undefined | ReturnType<typeof setTimeout>
+
+    async function checkCurrentSelection() {
+      let currentSelectionText = await getSelectedOutlookText()
+      if (typeof currentSelectionText === 'object') currentSelectionText = ''
+
+      if (currentSelectionText !== previousSelection) {
+        previousSelection = currentSelectionText
+
+        clearTimeout(debounceTimeout)
+        debounceTimeout = setTimeout(() => {
+          setCurrentSelection(currentSelectionText)
+        }, 300)
+      }
+    }
+
+    const intervalId = setInterval(checkCurrentSelection, 1000)
     return () => {
-      if (abortControllerRef.current) abortControllerRef.current.abort()
+      clearInterval(intervalId)
+      clearTimeout(debounceTimeout)
     }
   }, [])
 
@@ -203,10 +228,10 @@ export default function Chat() {
       <Box className={classes.header}>
         <Flex justify="between" align="center">
           <Flex align="center" justify="start" gap="2">
-            <IconButton className={classes.chatIcon} variant="outline">
-              <ChatIcon />
+            <IconButton className={classes.chatIcon} variant="ghost">
+              <Bot size="20" />
             </IconButton>
-            <Text size="2" weight="bold" style={{ color: `var(${cssThemeColorVarName})` }}>
+            <Text size="3" weight="bold" style={{ color: `var(${cssThemeColorVarName})` }}>
               GPT Chat Assistant
             </Text>
           </Flex>
@@ -214,11 +239,11 @@ export default function Chat() {
             <IconButton
               disabled={chatResponseLoading || !messages.length}
               onClick={handleNewChatClick}
-              variant="outline"
+              variant="ghost"
               size="1"
               className={classes.newChatIcon}
             >
-              <Pencil2Icon />
+              <SquarePen size="20" />
             </IconButton>
           </Tooltip>
         </Flex>
@@ -269,23 +294,28 @@ export default function Chat() {
       </Box>
 
       <Box className={classes.input}>
+        {currentSelection && (
+          <Box className={classes.selection}>
+            <Text size="1">Selection: {currentSelection}</Text>
+          </Box>
+        )}
         <TextArea
           className={classes.textArea}
           onKeyDown={handleKeyDown}
           autoFocus
           ref={textAreaRef}
           rows={4}
-          placeholder="Type your message..."
+          placeholder="Ask freely... Select mail for context"
         />
         <IconButton
           onClick={handleSendClick}
           onKeyDown={handleKeyDown}
           tabIndex={0}
           className={classes.sendBtn}
-          variant="outline"
+          variant="ghost"
           autoFocus
         >
-          {chatResponseLoading ? <MaskOnIcon color="red" /> : <PaperPlaneIcon />}
+          {chatResponseLoading ? <CircleStop strokeWidth="1.5" color="red" /> : <SendHorizonal size="20" />}
         </IconButton>
       </Box>
     </Box>

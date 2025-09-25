@@ -1,5 +1,6 @@
 import path, { resolve } from 'path'
 
+import { sentryVitePlugin } from '@sentry/vite-plugin'
 import react from '@vitejs/plugin-react'
 import devCerts from 'office-addin-dev-certs'
 import { defineConfig, loadEnv } from 'vite'
@@ -12,13 +13,25 @@ async function getHttpsOptions() {
 
 export default defineConfig(async ({ mode }) => {
   const env = loadEnv(mode, process.cwd())
+  const isDev = mode === 'development'
+
+  const sentryViteConfig = sentryVitePlugin({
+    authToken: process.env.SENTRY_AUTH_TOKEN,
+    org: 'shhapps-limited-liability-comp',
+    project: 'outlook',
+    telemetry: false,
+    debug: isDev,
+    silent: isDev
+  })
+
   return {
     plugins: [
       react(),
       officeAddin({
         devUrl: env.VITE_APP_URL,
         prodUrl: env.VITE_APP_URL
-      })
+      }),
+      sentryViteConfig
     ],
     resolve: {
       alias: {
@@ -30,8 +43,7 @@ export default defineConfig(async ({ mode }) => {
       emptyOutDir: true,
       rollupOptions: {
         input: {
-          taskpane: resolve(__dirname, 'taskpane.html'),
-          login: resolve(__dirname, 'login.html')
+          taskpane: resolve(__dirname, 'taskpane.html')
         }
       }
     },

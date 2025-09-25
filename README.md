@@ -7,7 +7,6 @@ A Microsoft Outlook Add-in that integrates AI capabilities directly into Outlook
 - Integration with Microsoft Outlook
 - AI-powered text generation and editing
 - Modern Radix UI interface
-- Authentication using MSAL
 - State management with Zustand
 
 ## 🛠️ Tech Stack
@@ -32,7 +31,7 @@ A Microsoft Outlook Add-in that integrates AI capabilities directly into Outlook
 1. Clone the repository:
    ```bash
    git clone [repository-url]
-   cd coregpt-word
+   cd coregpt-outlook
    ```
 
 2. Install dependencies:

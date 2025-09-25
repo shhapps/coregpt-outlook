@@ -1,6 +1,5 @@
-import { LocalStorageKeys, Theme } from '../constants'
-
-import { generateRequestId } from './index'
+import { Theme, LocalStorageKeys } from '@/utils/constants.ts'
+import { generateRequestId } from '@/utils/global'
 
 export const defaultAppState = {
   requestId: generateRequestId(),

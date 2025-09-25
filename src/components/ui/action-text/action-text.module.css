@@ -1,0 +1,11 @@
+.askAiBox {
+    display: flex !important;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.tooltipHover {
+    max-width: 250px;
+    white-space: normal;
+    word-break: break-word;
+}

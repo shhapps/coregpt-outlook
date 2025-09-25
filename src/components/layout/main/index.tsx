@@ -3,9 +3,9 @@ import { useEffect } from 'react'
 
 import classes from './main.module.css'
 
-import Chat from '@/components/chat'
 import Footer from '@/components/layout/footer'
 import Header from '@/components/layout/header'
+import AppTabs from '@/components/tabs/app-tabs'
 import Loader from '@/components/ui/loader'
 import { useAuthData } from '@/hooks/useAuthData.ts'
 import { useAppStore } from '@/stores/app.store.ts'
@@ -27,7 +27,7 @@ const Index = () => {
       </Box>
       <Box asChild>
         <main className={classes.main}>
-          <Chat />
+          <AppTabs />
         </main>
       </Box>
       <Box asChild>

@@ -4,8 +4,6 @@ export interface IOfficeInitialized {
   isOfficeInitialized: boolean
 }
 
-export type OfficeEventHandler = (args: { message: string; origin: string | undefined } | { error: number }) => void
-
 export interface IBackdrop {
   open: boolean
   closeOnClick?: boolean

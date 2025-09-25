@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios'
 
 import type { IApiAuthUser, IApiUser, IUpsertMicrosoftUser } from '@/interfaces/api.interfaces'
-import { LocalStorageKeys, API_URL } from '@/utils/constants.ts'
+import { API_URL, LocalStorageKeys } from '@/utils/constants'
 import { reloadWithClearing } from '@/utils/global'
 
 const axiosInstance = axios.create({ baseURL: API_URL })
@@ -30,7 +30,7 @@ axiosInstance.interceptors.response.use(
 export const getUserData = async (): Promise<IApiUser | null> => {
   try {
     const accessToken = localStorage.getItem(LocalStorageKeys.accessToken)
-    const { data } = await axiosInstance.get<IApiUser>('/word/users', {
+    const { data } = await axiosInstance.get<IApiUser>('/outlook/users', {
       headers: {
         Authorization: `Bearer ${accessToken as string}`
       }
@@ -49,7 +49,7 @@ export const getUserData = async (): Promise<IApiUser | null> => {
  */
 export const upsertMicrosoftUser = async (params: IUpsertMicrosoftUser): Promise<IApiAuthUser> => {
   try {
-    const { data } = await axiosInstance.put<IApiAuthUser>('/word/users', params)
+    const { data } = await axiosInstance.put<IApiAuthUser>('/outlook/users', params)
     return data
   } catch (e) {
     console.error('Error while upserting Microsoft user: ', e)

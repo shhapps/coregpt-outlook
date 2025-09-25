@@ -1,4 +1,4 @@
-import { StoreNames } from '../constants'
+import type { StoreNames } from '@/utils/constants.ts'
 
 export const generateRequestId = () =>
   '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, c =>
@@ -25,4 +25,14 @@ export const debounce = (func: () => void, timeout = 200) => {
 export const reloadWithClearing = () => {
   localStorage.clear()
   window.location.reload()
+}
+
+export const retry = async <T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> => {
+  return fn().catch(function (err: unknown) {
+    if (maxRetries <= 0) {
+      console.error('Error while retrying : ', err)
+      throw err
+    }
+    return retry(fn, maxRetries - 1)
+  })
 }

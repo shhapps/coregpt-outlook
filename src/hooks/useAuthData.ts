@@ -19,11 +19,13 @@ export const useAuthData = () => {
 
     // If not, need to get access token by upserting user
     if (!accessToken) {
+      const { emailAddress, displayName } = Office.context.mailbox.userProfile
+      const [firstName, lastName] = displayName.split(' ')
       // Update that later after auth
       const officeUserData = {
-        email: `${requestId}@mail.com`,
-        first_name: 'Word',
-        last_name: 'User'
+        email: emailAddress,
+        first_name: firstName,
+        last_name: lastName
       }
 
       const userData = await upsertMicrosoftUser({
