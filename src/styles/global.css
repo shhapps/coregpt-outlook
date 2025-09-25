@@ -1,0 +1,51 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    max-height: 100vh;
+    overflow: hidden;
+    height: 100vh;
+}
+
+:root {
+    --theme-color: #0588F0;
+    --app-color: #00304F;
+}
+
+/* Firefox */
+body, html,
+textarea, input {
+    scrollbar-width: thin !important;
+    scrollbar-color: var(--theme-color) transparent;
+}
+
+/* WebKit browsers (Chrome, Safari, Edge) */
+body::-webkit-scrollbar,
+html::-webkit-scrollbar,
+textarea::-webkit-scrollbar,
+input::-webkit-scrollbar {
+    width: 4px !important;
+    height: 4px !important;
+}
+
+body::-webkit-scrollbar-track,
+html::-webkit-scrollbar-track,
+textarea::-webkit-scrollbar-track,
+input::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+body::-webkit-scrollbar-thumb,
+html::-webkit-scrollbar-thumb,
+textarea::-webkit-scrollbar-thumb,
+input::-webkit-scrollbar-thumb {
+    background-color: var(--theme-color);
+    border-radius: 2px;
+}
+
+body::-webkit-scrollbar-thumb:hover,
+html::-webkit-scrollbar-thumb:hover,
+textarea::-webkit-scrollbar-thumb:hover,
+input::-webkit-scrollbar-thumb:hover {
+    background-color: var(--theme-color);
+}

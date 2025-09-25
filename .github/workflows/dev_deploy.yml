@@ -1,0 +1,58 @@
+name: Dev deploy
+
+on:
+ push:
+   branches:
+     - dev
+ workflow_dispatch:
+
+jobs:
+  lint_and_test:
+    name: Install → Lint → Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm i
+
+      - name: Run ESLint
+        run: |
+          echo "Running ESLint check..."
+          npm run lint
+
+      - name: Check Prettier formatting
+        run: |
+          echo "Checking Prettier formatting..."
+          npx prettier --check "{src,test}/**/*.{ts,js,json,yml}"
+
+      - name: Run Unit tests
+        run: |
+          echo "Running unit tests..."
+          npm run test
+
+  deploy:
+   name: Deploy to Dev
+   needs: lint_and_test
+   runs-on: ubuntu-latest
+
+   steps:
+   - name: install ssh keys
+     # check this thread to understand why its needed:
+     # https://stackoverflow.com/a/70447517
+     run: |
+       install -m 600 -D /dev/null ~/.ssh/id_rsa
+       echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+       ssh-keyscan -H ${{ secrets.EC2_IP_ADDRESS_DEV }} > ~/.ssh/known_hosts
+   - name: connect and pull
+     run: ssh ubuntu@${{ secrets.EC2_IP_ADDRESS_DEV }} "cd /var/www/outlook-addin-dev.coregptapps.com/coregpt-outlook && sudo git fetch origin && sudo git reset --hard origin/dev && sudo bash deploy.sh prod && exit"
+   - name: cleanup
+     run: rm -rf ~/.ssh

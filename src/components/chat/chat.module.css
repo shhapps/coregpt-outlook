@@ -1,0 +1,122 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 85px);
+    margin-top: 10px;
+}
+
+.header {
+    flex-shrink: 0;
+}
+
+.chatIcon {
+    width: 20px;
+    height: 20px;
+    padding: 4px 3px 3px;
+}
+
+.newChatIcon {
+    width: 20px;
+    height: 20px;
+    padding-bottom: 2px;
+    padding-right: 2px;
+    cursor: pointer;
+}
+
+.messages {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: thin !important;
+    scrollbar-color: var(--theme-color) transparent;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 5px;
+    border-radius: 3px;
+}
+
+.examplesContainer {
+    justify-items: start;
+}
+
+.exampleMessage {
+    display: inline-block;
+    width: auto;
+    border: 1px solid var(--theme-color);
+    border-radius: 50px;
+    margin-left: -5px;
+    cursor: pointer;
+    user-select: none;
+    padding: 6px;
+    color: var(--theme-color);
+    white-space: pre-wrap;
+}
+
+.exampleMessage:hover {
+    background-color: var(--theme-color);
+    color: white;
+}
+
+.userMessage {
+    padding: 2px 8px 4px;
+    border-radius: 5px;
+    font-weight: 500;
+    border: 1px solid var(--theme-color);
+}
+
+.assistantMessage {
+    position: relative;
+    border-radius: 5px;
+    padding: 2px 4px;
+    font-weight: 500;
+    background-color: #f5f5f5;
+    color: var(--black-a12) !important;
+}
+
+.light {
+    color: var(--accent-12);
+}
+
+.dark {
+    color: var(--accent-10);
+}
+
+.copyIcon {
+    position: sticky;
+    left: 2px;
+    bottom: 2px;
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+    color: white;
+}
+
+.input {
+    flex-shrink: 0;
+    position: relative;
+}
+
+.textArea {
+    border: 1px solid var(--theme-color) !important;
+}
+
+.textArea:focus {
+    border: none;
+}
+
+.sendBtn {
+    width: 25px;
+    height: 25px;
+    bottom: 5px;
+    right: 15px;
+    position: absolute;
+    padding: 1px;
+    color: var(--theme-color);
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.sendBtn:focus {
+    outline: none;
+    border: 1px solid var(--theme-color);
+
+}

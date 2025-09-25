@@ -1,0 +1,18 @@
+.header {
+    display: flex !important;
+    justify-content: space-between;
+    height: 35px;
+    align-items: center;
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
+    --card-border-radius: 0 !important;
+    --card-border-left: 0 !important;
+    --card-border-right: 0 !important;
+    box-shadow: var(--shadow-3);
+    flex-shrink: 0;
+}
+
+.leftItems {
+    display: flex !important;
+    align-items: center;
+}

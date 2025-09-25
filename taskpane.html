@@ -1,0 +1,40 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license. -->
+<!-- See LICENSE in the project root for license information -->
+
+<!doctype html>
+<html lang="en" data-framework="typescript">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>ChatGPT AI for Outlook</title>
+    <!-- Office JavaScript API -->
+    <script
+            type="text/javascript"
+            src="https://appsforoffice.microsoft.com/lib/1.1/hosted/office.js"
+    ></script>
+
+    <!-- Template styles -->
+    <link href="src/pages/taskpane/taskpane.css" rel="stylesheet" type="text/css"/>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5ZE6NQG87W"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-5ZE6NQG87W');
+    </script>
+
+
+</head>
+
+<body>
+<script type="module" src="src/pages/taskpane/index.tsx"></script>
+</body>
+</html>

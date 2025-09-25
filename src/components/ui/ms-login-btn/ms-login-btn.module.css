@@ -1,0 +1,13 @@
+.selector {
+    text-transform: none;
+    font-size: 0.9em;
+    font-weight: 400;
+    background-color: #2F2F2F;
+    color: #fff;
+    border-radius: 2px;
+    max-width: 200px;
+}
+
+.selector:hover {
+    background-color: #2F2F2F;
+}

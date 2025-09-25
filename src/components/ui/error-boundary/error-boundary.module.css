@@ -1,0 +1,30 @@
+.wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--gray-a2);
+    z-index: 9999;
+}
+
+.flexContainer {
+    height: 100%;
+}
+
+.card {
+    text-align: center;
+    padding: 2rem;
+    width: 100%;
+    max-width: 400px;
+}
+
+.btnWrapper {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn {
+    cursor: pointer !important;
+}

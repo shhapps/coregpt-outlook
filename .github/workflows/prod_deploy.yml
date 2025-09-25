@@ -1,0 +1,79 @@
+name: Prod deploy
+
+on:
+ push:
+   branches:
+     - main
+ workflow_dispatch:
+
+jobs:
+  lint_and_test:
+    name: Install → Lint → Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm i
+
+      - name: Run ESLint
+        run: |
+          echo "Running ESLint check..."
+          npm run lint
+
+      - name: Check Prettier formatting
+        run: |
+          echo "Checking Prettier formatting..."
+          npx prettier --check "{src,test}/**/*.{ts,js,json,yml}"
+
+      - name: Run Unit tests
+        run: |
+          echo "Running unit tests..."
+          npm run test
+
+  deploy:
+   name: Deploy to Prod
+   needs: lint_and_test
+   runs-on: ubuntu-latest
+
+   steps:
+   - name: Check if triggered by authorized user
+     run: |
+       AUTHORIZED_USERS="${{ secrets.ACTOR_USERNAME }}"
+       IFS=',' read -ra USERS <<< "$AUTHORIZED_USERS"
+       
+       echo "Authorized Users: ${USERS[@]}"
+       echo "GitHub Actor: ${{ github.actor }}"
+       
+       authorized=false
+       for user in "${USERS[@]}"; do
+         if [[ "$user" == "${{ github.actor }}" ]]; then
+           authorized=true
+           break
+         fi
+       done
+       
+       if [ "$authorized" = false ]; then
+         echo "Unauthorized user: ${{ github.actor }}. Access denied."
+         exit 1
+       fi
+
+   - name: install ssh keys
+     # check this thread to understand why its needed:
+     # https://stackoverflow.com/a/70447517
+     run: |
+       install -m 600 -D /dev/null ~/.ssh/id_rsa
+       echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+       ssh-keyscan -H ${{ secrets.EC2_IP_ADDRESS }} > ~/.ssh/known_hosts
+   - name: connect and pull
+     run: ssh ubuntu@${{ secrets.EC2_IP_ADDRESS }} "cd /var/www/outlook-addin.coregptapps.com/coregpt-outlook && sudo git fetch origin && sudo git reset --hard origin/main && sudo bash deploy.sh prod && exit"
+   - name: cleanup
+     run: rm -rf ~/.ssh
