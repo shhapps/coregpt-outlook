@@ -1,11 +1,11 @@
 import { Avatar, Box, Card, IconButton, Tooltip } from '@radix-ui/themes'
+import { Moon, Sun } from 'lucide-react'
 
 import classes from './header.module.css'
 
 import { useAppStore } from '@/stores/app.store.ts'
 import { Theme } from '@/utils/constants'
 import { LogoImage } from '@/utils/global/files'
-import { Moon, Sun } from 'lucide-react'
 
 const Header = () => {
   const { theme, updateTheme } = useAppStore()

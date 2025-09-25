@@ -1,5 +1,6 @@
 import { CheckIcon, CopyIcon, Cross2Icon } from '@radix-ui/react-icons'
 import { Box, Flex, Grid, IconButton, Text, TextArea, Tooltip } from '@radix-ui/themes'
+import { Bot, CircleStop, SendHorizonal, SquarePen } from 'lucide-react'
 import {
   createRef,
   type FC,
@@ -24,7 +25,6 @@ import { debounce, reloadWithClearing } from '@/utils/global'
 import { getSelectedOutlookText } from '@/utils/office/outlook-utils.ts'
 import { sendErrorToSentry } from '@/utils/sentry.ts'
 import { streamAsyncIterable } from '@/utils/streaming.ts'
-import { Bot, CircleStop, SendHorizonal, SquarePen } from 'lucide-react'
 
 interface ICopyBtnProps {
   index: number
