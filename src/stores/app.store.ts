@@ -1,9 +1,9 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 
-import type { IBackdrop, ISnackbarProps } from '@/interfaces/app.interfaces.ts'
+import type { IBackdrop, ISnackbarProps } from '@/interfaces/app.interfaces'
 import type { IUserInfo } from '@/interfaces/auth.interfaces'
-import { LocalStorageKeys, StoreNames, Theme } from '@/utils/constants'
+import { AppTabs, LocalStorageKeys, StoreNames, Theme } from '@/utils/constants'
 import { getStoreName } from '@/utils/global'
 import { setStoreDefaultValues } from '@/utils/global/store'
 
@@ -19,6 +19,8 @@ export interface IAppState {
   updateAccessToken: (accessToken?: string) => void
   userInfo?: IUserInfo
   updateUserInfo: (userInfo?: IUserInfo) => void
+  appTab: AppTabs
+  setAppTab: (newAppTab: AppTabs) => void
 }
 
 setStoreDefaultValues()
@@ -48,7 +50,9 @@ export const useAppStore = create<IAppState>()(
       },
       updateUserInfo: (userInfo?: IUserInfo) => {
         if (userInfo) set({ userInfo })
-      }
+      },
+      appTab: AppTabs.gptSlides,
+      setAppTab: (newAppTab: AppTabs) => set({ appTab: newAppTab })
     }),
     { name: getStoreName(StoreNames.mainStore) }
   )

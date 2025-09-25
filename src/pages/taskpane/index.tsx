@@ -4,11 +4,14 @@ import { createRoot } from 'react-dom/client'
 import TaskpaneApp from '@/components/taskpane-app/index.tsx'
 import type { IOfficeInitialized } from '@/interfaces/app.interfaces.ts'
 import '@/styles/global.css'
+import { initSentry } from '@/utils/sentry.ts'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 /* global document, Office, module, require */
 
 let isOfficeInitialized = false
+
+initSentry()
 
 const render = (Component: FC<IOfficeInitialized>) => {
   const mainContainerId = 'app'

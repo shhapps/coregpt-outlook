@@ -1,7 +1,7 @@
 .wrapper {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 85px);
+    height: calc(100vh - 130px);
     margin-top: 10px;
 }
 
@@ -93,6 +93,25 @@
 .input {
     flex-shrink: 0;
     position: relative;
+}
+
+.selection {
+    padding: 1px 3px;
+    position: absolute;
+    top: -30px;
+    border-radius: 3px;
+    background-color: color-mix(in srgb, var(--theme-color) 15%, transparent);
+    color: white;
+    right: 0;
+
+    max-width: 60%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.selection:hover {
+    background-color: color-mix(in srgb, var(--theme-color) 100%, transparent);
 }
 
 .textArea {

@@ -1,5 +1,5 @@
 import { useAppStore } from '@/stores/app.store'
-import { COMMON_MESSAGES, type DialogSource } from '@/utils/constants'
+import { COMMON_MESSAGES, DialogSource } from '@/utils/constants'
 
 export const useDialogEvent = (dialogSource: DialogSource) => {
   const { setSnackbar } = useAppStore()

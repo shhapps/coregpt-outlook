@@ -1,4 +1,4 @@
-import { getValidEmail } from '@/utils/global/index.ts'
+import { getValidEmail } from '@/utils/global/index'
 
 describe('getValidEmail', () => {
   // Returns msUserMail when it contains '@' symbol

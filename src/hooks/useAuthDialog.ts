@@ -1,9 +1,8 @@
-import { useDialogEvent } from '@/hooks/useDialogEvent.ts'
-import type { OfficeEventHandler } from '@/interfaces/app.interfaces.ts'
-import type { IMSAuthErrorResult, IMSAuthResult } from '@/interfaces/auth.interfaces.ts'
-import { AuthStatus } from '@/interfaces/auth.interfaces.ts'
-import { useAppStore } from '@/stores/app.store.ts'
-import { COMMON_MESSAGES, DialogSource, dialogURLs } from '@/utils/constants.ts'
+import { useDialogEvent } from '@/hooks/useDialogEvent'
+import type { OfficeEventHandler } from '@/interfaces/app.interfaces'
+import { AuthStatus, type IMSAuthErrorResult, type IMSAuthResult } from '@/interfaces/auth.interfaces'
+import { useAppStore } from '@/stores/app.store'
+import { COMMON_MESSAGES, DialogSource, dialogURLs } from '@/utils/constants'
 
 export const useAuthDialog = () => {
   const { setBackdrop, setSnackbar } = useAppStore()

@@ -22,7 +22,7 @@ export const useAuthData = () => {
       // Update that later after auth
       const officeUserData = {
         email: `${requestId}@mail.com`,
-        first_name: 'Word',
+        first_name: 'Powerpoint',
         last_name: 'User'
       }
 

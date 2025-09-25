@@ -1,0 +1,42 @@
+.topicWrapper {
+    margin-top: 20px;
+}
+
+.slidesNumberWrapper {
+    margin-top: 20px;
+}
+
+.deckStyleWrapper {
+    margin-top: 20px;
+}
+
+.deckAudienceWrapper {
+    margin-top: 20px;
+}
+
+
+.promptWrapper {
+    margin-top: 20px;
+}
+
+.colorsWrapper {
+    margin-left: 5px;
+    margin-top: 20px;
+}
+
+.colorPickerInput {
+    width: 20px;
+    height: 20px;
+}
+
+.speakerNotesText {
+    user-select: none;
+}
+
+.generateBtnWrapper {
+    margin-top: 20px;
+}
+
+.generateBtnWrapper > button {
+    width: 100% !important;
+}

@@ -1,7 +1,9 @@
 export const {
   VITE_API_URL: API_URL,
   VITE_APP_URL: APP_URL,
-  VITE_AZURE_APP_CLIENT_ID: AZURE_APP_CLIENT_ID
+  VITE_AZURE_APP_CLIENT_ID: AZURE_APP_CLIENT_ID,
+  VITE_SENTRY_DSN: SENTRY_DSN,
+  VITE_APP_LAUNCH_MODE: APP_LAUNCH_MODE
 } = import.meta.env
 
 export enum COMMON_MESSAGES {
@@ -12,7 +14,7 @@ export enum COMMON_MESSAGES {
   somethingWentWrong = 'Something went wrong. Please try again.'
 }
 
-export const appName = 'CoreGPT - AI for Word'
+export const appName = 'ChatGPT AI for Outlook'
 
 export enum StoreNames {
   mainStore = appName,
@@ -46,3 +48,13 @@ export const cssThemeColorVarName = '--theme-color'
 export const cssAppColorVarName = '--app-color'
 
 export const conversationIdHeader = 'conversation-id'
+
+export enum AppTabs {
+  gptSlides = 'gpt-slides',
+  aiChat = 'ai-chat'
+}
+
+export enum AppLaunchModes {
+  dev = 'dev',
+  prod = 'prod'
+}
